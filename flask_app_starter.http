@@ -1,0 +1,16 @@
+# Vscode REST Client file for testing app
+# https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+
+###
+
+GET http://127.0.0.1:5000/ip
+
+# HTTP/1.0 200 OK
+# Content-Type: application/json
+# Content-Length: 29
+# Server: Werkzeug/1.0.1 Python/3.8.5
+# Date: Wed, 04 Nov 2020 23:49:22 GMT
+
+# {
+#   "my_ip": "1.2.3.4"
+# }

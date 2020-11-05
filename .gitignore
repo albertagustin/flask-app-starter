@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# added
+.vscode/
+# .envrc    # uncomment once cloned to avoid pushing local env variables to git
