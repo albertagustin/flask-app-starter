@@ -1,0 +1,21 @@
+name: Post Deploy
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+jobs:
+  post-deploy:
+    runs-on: ubuntu-latest
+    name: Run post-deploy action
+    if: github.event.pull_request.merged == true
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: albertagustin/github-actions
+          ref: main
+          path: ./.github/actions/github-actions
+      - id: post-deploy
+        uses: ./.github/actions/github-actions/post-deploy
