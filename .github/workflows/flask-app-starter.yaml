@@ -12,6 +12,7 @@ on:
 jobs:
   test-custom-action:
     runs-on: ubuntu-latest
+    name: Test Custom Action
     steps:
       - uses: actions/checkout@v2
         with:
@@ -25,6 +26,23 @@ jobs:
           who-to-greet: "Mona the Octocat"
       - name: Get the output time
         run: echo "The time was ${{ steps.hello.outputs.time }}"
+
+  test-composite-action:
+    runs-on: ubuntu-latest
+    name: Test Composite Action
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: albertagustin/github-actions
+          ref: v1
+          path: ./.github/actions/github-actions
+      - name: Run composite action
+        id: foo
+        uses: ./.github/actions/github-actions/test-composite-action@v1
+        with:
+          who-to-greet: "Mona the Octocat"
+      - run: echo random-number ${{ steps.foo.outputs.random-number }}
+        shell: bash
 
   test:
     runs-on: ubuntu-latest
