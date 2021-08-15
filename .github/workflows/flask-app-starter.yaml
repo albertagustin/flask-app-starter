@@ -19,7 +19,12 @@ jobs:
           ref: main
           path: ./.github/actions/github-actions
       - name: Run custom action
+        id: custom-action
         uses: ./.github/actions/github-actions/test-custom-action
+        with:
+          who-to-greet: "Mona the Octocat"
+      - name: Get the output time
+        run: echo "The time was ${{ steps.hello.outputs.time }}"
 
   test:
     runs-on: ubuntu-latest
