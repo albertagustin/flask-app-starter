@@ -12,7 +12,7 @@ on:
 jobs:
   test-custom-action:
     runs-on: ubuntu-latest
-    name: Test Custom Action
+    name: Run Remote Custom Action Locally
     steps:
       - uses: actions/checkout@v2
         with:
@@ -29,7 +29,7 @@ jobs:
 
   test-composite-action:
     runs-on: ubuntu-latest
-    name: Test Composite Action
+    name: Run Remote Composite Action Locally
     steps:
       - uses: actions/checkout@v2
         with:
@@ -46,6 +46,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    name: Run Unit Tests
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.9
