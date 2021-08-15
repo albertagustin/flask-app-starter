@@ -19,7 +19,7 @@ jobs:
           ref: main
           path: ./.github/actions/github-actions
       - name: Run custom action
-        id: custom-action
+        id: hello
         uses: ./.github/actions/github-actions/test-custom-action
         with:
           who-to-greet: "Mona the Octocat"
