@@ -10,54 +10,53 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-custom-action:
-    runs-on: ubuntu-latest
-    name: Run Remote Custom Action Locally
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          repository: albertagustin/github-actions
-          ref: main
-          path: ./.github/actions/github-actions
-      - name: Run custom action
-        id: hello
-        uses: ./.github/actions/github-actions/test-custom-action
-        with:
-          who-to-greet: "Mona the Octocat"
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+  # test-custom-action:
+  #   runs-on: ubuntu-latest
+  #   name: Run Remote Custom Action Locally
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         repository: albertagustin/github-actions
+  #         ref: main
+  #         path: ./.github/actions/github-actions
+  #     - name: Run custom action
+  #       id: hello
+  #       uses: ./.github/actions/github-actions/test-custom-action
+  #       with:
+  #         who-to-greet: "Mona the Octocat"
+  #     - name: Get the output time
+  #       run: echo "The time was ${{ steps.hello.outputs.time }}"
 
-  test-composite-action:
-    runs-on: ubuntu-latest
-    name: Run Remote Composite Action Locally
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          repository: albertagustin/github-actions
-          ref: v1
-          path: ./.github/actions/github-actions
-      - name: Run composite action
-        id: foo
-        uses: ./.github/actions/github-actions/test-composite-action
-        with:
-          who-to-greet: "Mona the Octocat"
-      - run: echo random-number ${{ steps.foo.outputs.random-number }}
-        shell: bash
+  # test-composite-action:
+  #   runs-on: ubuntu-latest
+  #   name: Run Remote Composite Action Locally
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         repository: albertagustin/github-actions
+  #         ref: v1
+  #         path: ./.github/actions/github-actions
+  #     - name: Run composite action
+  #       id: foo
+  #       uses: ./.github/actions/github-actions/test-composite-action
+  #       with:
+  #         who-to-greet: "Mona the Octocat"
+  #     - run: echo random-number ${{ steps.foo.outputs.random-number }}
+  #       shell: bash
 
   test:
     runs-on: ubuntu-latest
     name: Run Unit Tests
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: "3.13"
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pipenv
-          pipenv install --dev
+          pip install -r requirements-dev.txt
       #     - name: Lint with flake8
       #       run: |
       #         # stop the build if there are Python syntax errors or undefined names
@@ -66,4 +65,4 @@ jobs:
       #         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Test with pytest
         run: |
-          pipenv run pytest test/
+          pytest test/
