@@ -7,7 +7,7 @@ name = "pypi"
 flask = "*"
 flask-cors = "*"
 requests = "*"
-urllib3 = ">=1.26.5"
+urllib3 = "*"
 
 [dev-packages]
 pytest = "*"
@@ -17,4 +17,4 @@ pytest-flask = "*"
 requests-mock = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.13"

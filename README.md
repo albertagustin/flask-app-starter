@@ -21,7 +21,7 @@ A starter for a simple Flask app that I use for my projects with integration of 
 
    >>
       ================================================================================================= test session starts =================================================================================================
-      platform darwin -- Python 3.9.3, pytest-6.2.3, py-1.10.0, pluggy-0.13.1
+      platform darwin -- Python 3.13.0, pytest-8.4.1, py-1.11.0, pluggy-1.5.0
       rootdir: /flask-app-starter
       plugins: requests-mock-1.8.0, flask-1.2.0
       collected 1 item
