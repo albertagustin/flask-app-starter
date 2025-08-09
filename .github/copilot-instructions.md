@@ -17,7 +17,7 @@ Always reference these instructions first and fallback to search or bash command
 
 - Bootstrap and setup the repository:
   - Use `setup-python` action in GitHub Actions workflows
-  - Install dependencies: `pip install -r requirements-dev.txt` -- takes 1 second. NEVER CANCEL. Set timeout to 60+ seconds.
+  - Install dependencies: `pip install -r requirements-dev.txt` (includes both requirements.txt and requirements-dev.txt) -- takes 1 second. NEVER CANCEL. Set timeout to 60+ seconds.
   - **NEVER** use pipenv in automated workflows
 
 - Run the application:
@@ -32,7 +32,7 @@ Always reference these instructions first and fallback to search or bash command
   - Ensure Python 3.9+ is installed (`python3 --version`)
   - Install pipenv if not available: `pip install pipenv`
   - **CRITICAL**: pipenv may fail with network timeouts. Use pip fallback instead.
-  - Install dependencies: `pip install -r requirements-dev.txt` -- takes 1 second. NEVER CANCEL. Set timeout to 60+ seconds.
+  - Install dependencies: `pip install -r requirements-dev.txt` (includes both requirements.txt and requirements-dev.txt) -- takes 1 second. NEVER CANCEL. Set timeout to 60+ seconds.
   - Alternative (if pipenv works): `pipenv --python python3 install --dev` -- takes 30 seconds. NEVER CANCEL. Set timeout to 120+ seconds.
 
 - Run the application:
@@ -66,9 +66,10 @@ Always reference these instructions first and fallback to search or bash command
 ### Dependencies and Python Version Issues
 - The Pipfile specifies python_version = "3.9" but the application works with Python 3.12
 - When using pipenv with Python 3.12 (for human developers only), expect warnings about Python version mismatch - these can be ignored
-- **CRITICAL**: pipenv frequently fails with network timeouts. Use pip with requirements-dev.txt instead.
+- **CRITICAL**: pipenv frequently fails with network timeouts. Use pip with requirements-dev.txt (which includes requirements.txt) instead.
 - **CRITICAL**: pytest and related tools have compatibility issues with Python 3.12 due to old package versions
 - **For automated workflows**: Always use `setup-python` action with requirements files, never pipenv
+- **For development**: Use `pip install -r requirements-dev.txt` which automatically includes both production (requirements.txt) and development dependencies
 
 ### Running Commands
 
@@ -82,7 +83,7 @@ Always reference these instructions first and fallback to search or bash command
 # - run: pip install -r requirements-dev.txt
 
 # Manual setup for Copilot
-pip install -r requirements-dev.txt      # ~1 second, reliable
+pip install -r requirements-dev.txt      # ~1 second, includes both requirements.txt and requirements-dev.txt, reliable
 
 # Run application (NEVER use runserver.py in automated workflows)
 export PYTHONPATH=.
@@ -98,7 +99,7 @@ PYTHONPATH=. python -m pytest test/
 #### For Human Developers (Local Development)
 ```bash
 # Setup (choose one approach, pip is more reliable)
-pip install -r requirements-dev.txt      # ~1 second, reliable
+pip install -r requirements-dev.txt      # ~1 second, includes both requirements.txt and requirements-dev.txt, reliable
 # OR (if pipenv works and no network issues)  
 pipenv --python python3 install --dev    # ~30 seconds, may timeout
 
@@ -165,7 +166,7 @@ Single test that validates the /helloworld endpoint:
 ## Known Issues and Workarounds
 
 1. **Network Timeouts**: pipenv frequently fails with network timeouts
-   - Fix: Use `pip install -r requirements-dev.txt` instead
+   - Fix: Use `pip install -r requirements-dev.txt` (includes both requirements.txt and requirements-dev.txt) instead
    - Error: `ReadTimeoutError: HTTPSConnectionPool(host='pypi.org', port=443): Read timed out.`
 
 2. **Python Version Compatibility**: Project specified for 3.9 but works with 3.12
@@ -200,7 +201,7 @@ Single test that validates the /helloworld endpoint:
 1. **Setup new environment**:
    ```bash
    # Use setup-python action in GitHub Actions workflows
-   pip install -r requirements-dev.txt  # 1 second, timeout 60s, reliable
+   pip install -r requirements-dev.txt  # 1 second, includes both requirements.txt and requirements-dev.txt, timeout 60s, reliable
    ```
 
 2. **Make code changes** in src/ directory
@@ -227,7 +228,7 @@ Single test that validates the /helloworld endpoint:
 
 1. **Setup new environment**:
    ```bash
-   pip install -r requirements-dev.txt  # 1 second, timeout 60s, reliable
+   pip install -r requirements-dev.txt  # 1 second, includes both requirements.txt and requirements-dev.txt, timeout 60s, reliable
    # OR (if no network issues)
    pipenv --python python3 install --dev  # 30 seconds, timeout 120s, may fail
    ```
@@ -263,7 +264,7 @@ Single test that validates the /helloworld endpoint:
 
 - GitHub Actions workflow runs on Ubuntu latest with Python 3.13
 - Uses `setup-python` action to setup Python environment
-- Installs dependencies with `pip install -r requirements-dev.txt`
+- Installs dependencies with `pip install -r requirements-dev.txt` (includes both requirements.txt and requirements-dev.txt)
 - Tests run with `pytest test/` (not pipenv)
 - **NEVER** uses pipenv or runserver.py in automated workflows
 - Linting steps are available with updated flake8 7.3.0
