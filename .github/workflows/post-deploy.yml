@@ -1,16 +1,12 @@
 name: Post Deploy
 
 on:
-  pull_request:
-    branches:
-      - main
-    types: [closed]
+  workflow_dispatch:
 
 jobs:
   post-deploy:
     runs-on: ubuntu-latest
     name: Run post-deploy action
-    if: github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v2
         with:
