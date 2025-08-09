@@ -4,7 +4,29 @@ A Flask web application starter project with basic scaffolding for tests, using 
 
 Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.
 
+## Important Distinctions
+
+**Human Development vs Automated Workflows**:
+- **runserver.py**: Only for human developers running local dev servers. NEVER use in automated workflows.
+- **pipenv**: Only for human developers setting up local Python environments. NEVER use in automated workflows.
+- **Automated workflows**: Always use `setup-python` action with `requirements.txt` and `requirements-dev.txt` files.
+
 ## Working Effectively
+
+### For GitHub Copilot and Automated Workflows
+
+- Bootstrap and setup the repository:
+  - Use `setup-python` action in GitHub Actions workflows
+  - Install dependencies: `pip install -r requirements-dev.txt` -- takes 1 second. NEVER CANCEL. Set timeout to 60+ seconds.
+  - **NEVER** use pipenv in automated workflows
+
+- Run the application:
+  - ALWAYS set PYTHONPATH first: `export PYTHONPATH=.`
+  - Start Flask development server: `PYTHONPATH=. FLASK_APP=src.app FLASK_DEBUG=1 flask run --host=127.0.0.1 --port=5001`
+  - Use port 5001 instead of default 5000 to avoid conflicts
+  - **NEVER** use `runserver.py` in automated workflows
+
+### For Human Developers (Local Development)
 
 - Bootstrap and setup the repository:
   - Ensure Python 3.9+ is installed (`python3 --version`)
@@ -17,13 +39,13 @@ Always reference these instructions first and fallback to search or bash command
   - ALWAYS set PYTHONPATH first: `export PYTHONPATH=.`
   - Start Flask development server: `PYTHONPATH=. FLASK_APP=src.app FLASK_DEBUG=1 flask run --host=127.0.0.1 --port=5001`
   - Use port 5001 instead of default 5000 to avoid conflicts
-  - Alternative: `PYTHONPATH=. python runserver.py` (but may conflict on port 5000)
+  - Human alternative: `PYTHONPATH=. python runserver.py` (but may conflict on port 5000, only for local development)
 
 - Test the application:
   - **CRITICAL**: pytest 6.2.4 has compatibility issues with Python 3.12. Upgrade first: `pip install pytest>=7.0.0`
   - **CRITICAL**: Even after upgrade, pytest may still fail due to py package compatibility. Testing may not work with Python 3.12.
   - If pytest works: `PYTHONPATH=. python -m pytest test/` -- takes 5 seconds. NEVER CANCEL. Set timeout to 60+ seconds.
-  - Alternative with pipenv (if both pipenv and pytest work): `pipenv run pytest test/`
+  - Alternative with pipenv (for human developers only): `pipenv run pytest test/`
   - **FALLBACK**: If testing fails, manually validate the application instead.
 
 ## Validation
@@ -43,11 +65,37 @@ Always reference these instructions first and fallback to search or bash command
 
 ### Dependencies and Python Version Issues
 - The Pipfile specifies python_version = "3.9" but the application works with Python 3.12
-- When using pipenv with Python 3.12, expect warnings about Python version mismatch - these can be ignored
+- When using pipenv with Python 3.12 (for human developers only), expect warnings about Python version mismatch - these can be ignored
 - **CRITICAL**: pipenv frequently fails with network timeouts. Use pip with requirements-dev.txt instead.
 - **CRITICAL**: pytest and related tools have compatibility issues with Python 3.12 due to old package versions
+- **For automated workflows**: Always use `setup-python` action with requirements files, never pipenv
 
 ### Running Commands
+
+#### For GitHub Copilot and Automated Workflows
+```bash
+# Setup (automated workflows - use setup-python action)
+# In GitHub Actions:
+# - uses: actions/setup-python@v5
+#   with:
+#     python-version: "3.13"
+# - run: pip install -r requirements-dev.txt
+
+# Manual setup for Copilot
+pip install -r requirements-dev.txt      # ~1 second, reliable
+
+# Run application (NEVER use runserver.py in automated workflows)
+export PYTHONPATH=.
+FLASK_APP=src.app FLASK_DEBUG=1 flask run --host=127.0.0.1 --port=5001
+
+# Test application  
+curl -s http://127.0.0.1:5001/helloworld
+
+# Run tests
+PYTHONPATH=. python -m pytest test/
+```
+
+#### For Human Developers (Local Development)
 ```bash
 # Setup (choose one approach, pip is more reliable)
 pip install -r requirements-dev.txt      # ~1 second, reliable
@@ -57,6 +105,8 @@ pipenv --python python3 install --dev    # ~30 seconds, may timeout
 # Run application
 export PYTHONPATH=.
 FLASK_APP=src.app FLASK_DEBUG=1 flask run --host=127.0.0.1 --port=5001
+# OR (for human development only)
+python runserver.py  # may conflict on port 5000
 
 # Test application  
 curl -s http://127.0.0.1:5001/helloworld
@@ -64,6 +114,8 @@ curl -s http://127.0.0.1:5001/helloworld
 # Run tests (may fail with Python 3.12 compatibility issues)
 pip install pytest>=7.0.0               # attempt to fix pytest
 PYTHONPATH=. python -m pytest test/     # may still fail due to py package
+# OR (for human development with pipenv)
+pipenv run pytest test/
 ```
 
 ### Project Structure Reference
@@ -72,7 +124,7 @@ PYTHONPATH=. python -m pytest test/     # may still fail due to py package
 ├── Pipfile.lock                        # locked versions
 ├── requirements.txt                    # production dependencies  
 ├── requirements-dev.txt                # development dependencies
-├── runserver.py                        # development server wrapper
+├── runserver.py                        # development server wrapper (human developers only)
 ├── src/
 │   ├── app.py                          # Flask application factory
 │   ├── views/                          # Blueprint routes
@@ -143,6 +195,36 @@ Single test that validates the /helloworld endpoint:
 
 ## Development Workflow
 
+### For GitHub Copilot and Automated Workflows
+
+1. **Setup new environment**:
+   ```bash
+   # Use setup-python action in GitHub Actions workflows
+   pip install -r requirements-dev.txt  # 1 second, timeout 60s, reliable
+   ```
+
+2. **Make code changes** in src/ directory
+
+3. **Test changes**:
+   ```bash
+   export PYTHONPATH=.
+   python -m pytest test/      # 5 seconds, timeout 60s
+   ```
+
+4. **Run application** (NEVER use runserver.py):
+   ```bash
+   export PYTHONPATH=.
+   FLASK_APP=src.app FLASK_DEBUG=1 flask run --host=127.0.0.1 --port=5001
+   ```
+
+5. **Manual validation** (ALWAYS do this):
+   ```bash
+   curl -s http://127.0.0.1:5001/helloworld
+   # Should return: {"msg": "Hello World!"}
+   ```
+
+### For Human Developers (Local Development)
+
 1. **Setup new environment**:
    ```bash
    pip install -r requirements-dev.txt  # 1 second, timeout 60s, reliable
@@ -157,12 +239,16 @@ Single test that validates the /helloworld endpoint:
    export PYTHONPATH=.
    pip install pytest>=7.0.0  # attempt fix
    python -m pytest test/      # 5 seconds, timeout 60s, may still fail
+   # OR (with pipenv)
+   pipenv run pytest test/
    ```
 
 4. **Run application**:
    ```bash
    export PYTHONPATH=.
    FLASK_APP=src.app FLASK_DEBUG=1 flask run --host=127.0.0.1 --port=5001
+   # OR (for human development only)
+   python runserver.py  # may conflict on port 5000
    ```
 
 5. **Manual validation** (ALWAYS do this since automated tests may fail):
@@ -175,7 +261,10 @@ Single test that validates the /helloworld endpoint:
 
 ## CI/CD Notes
 
-- GitHub Actions workflow runs on Ubuntu latest with Python 3.9
-- Tests run with `pipenv run pytest test/` 
-- Linting steps are commented out due to compatibility issues
-- Workflow includes custom GitHub Actions examples (test-custom-action, test-composite-action)
+- GitHub Actions workflow runs on Ubuntu latest with Python 3.13
+- Uses `setup-python` action to setup Python environment
+- Installs dependencies with `pip install -r requirements-dev.txt`
+- Tests run with `pytest test/` (not pipenv)
+- **NEVER** uses pipenv or runserver.py in automated workflows
+- Linting steps are available with updated flake8 7.3.0
+- Workflow includes examples of custom GitHub Actions (commented out)
